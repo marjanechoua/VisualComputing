@@ -10,6 +10,7 @@ cmake-build-*/
 *.DS_Store
 
 # OpenGL / Libraries
-*.dll
+*.dllgit remote remove origin
+
 *.so
 *.dylib
