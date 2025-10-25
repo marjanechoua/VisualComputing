@@ -1,0 +1,15 @@
+# CLion / CMake / Build
+cmake-build-*/
+*.o
+*.obj
+*.exe
+*.log
+*.user
+*.idea/
+*.iml
+*.DS_Store
+
+# OpenGL / Libraries
+*.dll
+*.so
+*.dylib
