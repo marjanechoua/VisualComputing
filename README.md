@@ -7,38 +7,6 @@
 Dieses Projekt dient als Grundlage für die OpenGL-Praktika im Modul **Visual Computing**.  
 Hier ist dokumentiert, wie das Projekt eingerichtet wurde, welche Bibliotheken verwendet werden und wie das System funktioniert.
 
----
-
-## 🧩 Projektstruktur
-
-```
-
-OpenGL_Praktikum/
-├── CMakeLists.txt               # Haupt-CMake Datei
-├── src/                         # Quellcode
-│   ├── main.cpp                 # Einstiegspunkt (Programmstart)
-│   ├── Framework/               # Framework-Logik (Fenster, Shader, Szenen)
-│   │   ├── Assets/              # Shader, Texturen, Models
-│   │   ├── SceneElements/       # Szenenklassen (z. B. Praktikum1.cpp)
-│   │   ├── Game/                # Spiellogik / Hauptfenstersteuerung
-│   │   └── ...
-│
-├── framework/                   # Zusätzliche Framework-Klassen
-│   ├── OpenGLWindow.h/.cpp
-│   ├── libheaders.h
-│
-├── libs/                        # Externe Libraries
-│   ├── glfw-3.4/                # Fenster- und Inputsystem
-│   ├── glew-2.1.0/              # OpenGL Extension Loader
-│   ├── glm-master/              # Mathe-Library für 3D
-│   ├── stb/                     # Bild- und Textur-Loader
-│
-├── assets/                      # Ressourcen (Shader, Modelle, Texturen)
-│   └── scenes/                  # Szenenheader (z. B. Praktikum1.h)
-│
-└── cmake-build-debug/           # Build-Ordner (automatisch erstellt)
-
-````
 
 ---
 
@@ -57,15 +25,14 @@ OpenGL_Praktikum/
    )
 
 
-3. **Pfadprobleme behoben** (alte GLFW 3.2.1 gelöscht, 3.4 korrekt verlinkt).
+3. **Pfadprobleme behoben** (alte GLFW 3.2.1 gelöscht, jetzt GLFW 3.4 und überall in den CMakeLists files 3.25 als minimum angegeben).
 
-4. **Fehlende Dateien ergänzt** (z. B. `Praktikum1.h` in assets/scenes).
 
-5. **CMake Build neu generiert**
+4. **CMake Build neu generiert**
    → in CLion: *File → Reload CMake Project*
    → oder manuell: `rm -rf cmake-build-debug && cmake -S . -B cmake-build-debug`
 
-6. **Projekt erfolgreich gebaut:**
+5. **Projekt erfolgreich gebaut:**
    Schwarzes Fenster bestätigt, dass Rendering-Loop aktiv ist 🎉
 
 ---
@@ -81,7 +48,7 @@ OpenGL_Praktikum/
 * **`ShaderProgram`**:
   Lädt und kompiliert deine Shader (`vertex_shader.glsl`, `fragment_shader.glsl`).
 
-* **`Scene` / `Praktikum1`**:
+* **`Scene`**:
   Enthält Objekte, die in einer Szene gezeichnet werden (z. B. Würfel, Modelle, etc.).
   Wird vom `Window` geladen und in jedem Frame gerendert.
 
@@ -162,9 +129,3 @@ In **CLion**:
 
 ```
 
----
-
-Wenn du magst, kann ich dir noch automatisch ein paar **nützliche Kommentare im Code** einfügen (z. B. in `main.cpp` oder `ShaderProgram.h`), damit du direkt siehst, wie alles zusammenhängt.
-
-Willst du, dass ich dir das README mit Kommentaren im Code kombiniere (so als kleine Lernhilfe-Version)?
-```

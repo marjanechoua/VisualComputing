@@ -29,9 +29,11 @@ private:
 	AssetManager m_assets;
     ShaderProgram* m_shader;
     GLuint vaoID, vboID;
+	// diese member werden gebraucht, damit wir vao,vbo und ibo in der render methode verwenden können, sonst wird nichts angezeigt
 	GLuint m_vao;
 	GLuint m_vbo;
 	GLuint m_ibo;
+
 
 };
 

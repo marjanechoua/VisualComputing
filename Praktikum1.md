@@ -1,15 +1,10 @@
-Super! 🎉 Richtig stark — das war der schwierigste Teil (alles richtig verknüpfen).
-Jetzt eine **README / Dokumentation** zu machen ist *perfekt*, um dein Verständnis zu festigen.
 
-Hier ist ein Vorschlag für eine saubere, leicht verständliche **README.md**, die du direkt in dein Projektverzeichnis legen kannst:
-
----
 
 # 🧱 Visual Computing – Praktikum 1
 
 ### Hochschule Darmstadt – WS 2025/2026
 
-**Thema:** Zeichnen von Geometrien mit VAO, VBO und IBO in OpenGL
+**Thema:** Zeichnen von  Haus mit VAO, VBO und IBO in OpenGL
 
 ---
 

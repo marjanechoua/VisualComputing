@@ -19,51 +19,43 @@ bool Scene::init()
 		m_shader = m_assets.getShaderProgram("shader");
         m_shader->use();
 
-        float vertices[] = {-0.5, -0.5, 0.0, 0.0, 1.0,
-                            0.5, -0.5, 0.0, 0.0, 1.0,
-                            0.5, 0.5, 0.0, 1.0, 0.0,
-                            0.0, 1.0, 1.0, 0.0, 0.0,
-                            -0.5, 0.5, 0.0, 1.0, 0.0};
+		// Jeder Vertex hat 5 Werte, 2 für Position x,y und 3 für Farbe r,g,b
+        float vertices[] = {-0.5, -0.5, 0.0, 0.0, 1.0, // Vertex 0
+                            0.5, -0.5, 0.0, 0.0, 1.0, // Vertex 1
+                            0.5, 0.5, 0.0, 1.0, 0.0, // Vertex 2
+                            0.0, 1.0, 1.0, 0.0, 0.0, // Vertex 3
+                            -0.5, 0.5, 0.0, 1.0, 0.0}; //Vertex 4
 
-        int indices[] = {0, 1, 2,
-                         0, 2, 4,
-                         4, 2, 3};
+        int indices[] = {0, 1, 2, // Erstes Dreieck: Vertex 0, 1, 2
+                         0, 2, 4, // zweites Dreiecck: Vertex 0,2,4
+                         4, 2, 3}; // drittes Dreieck: vertrex 4,2,3
 
 		/* Praktikum 1 */
-		// 1. VAO erstellen und binden
-		GLuint vaoID;
-		glGenVertexArrays(1, &vaoID);
-		glBindVertexArray(vaoID);
-		m_vao = vaoID; // falls du es als Member speichern willst
+		// a) VBO erzeugen, binden und Daten hochladen ( VBO ist quasi ein Container mit Rohdaten)
+		glGenBuffers(1, &m_vbo); // machen Speicher
+		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW); // Rohdaten kommen auf die GPU
 
-		// 2. VBO erstellen, binden und Daten hochladen
-		GLuint vboID;
-		glGenBuffers(1, &vboID);
-		glBindBuffer(GL_ARRAY_BUFFER, vboID);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-		m_vbo = vboID; // Member speichern
+		// b) VAO erzeugen und binden ( sagt wie man die Rohdaten im VBO liest)
+		glGenVertexArrays(1, &m_vao);
+		glBindVertexArray(m_vao);
 
-		// 3. Vertex-Attribute definieren und aktivieren
-		// Attribut 0 = Position (x, y, z)
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+		// c) Vertex-Attribute definieren und aktivieren ( VertexAttribPointer sagt, welche Werte im Vertex für Position/Farbe(etc. sind)
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(0);
 
-		// Attribut 1 = Farbe (r, g)
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 		glEnableVertexAttribArray(1);
 
-		// 4. Index Buffer Object (IBO/EBO) erstellen und binden
-		GLuint iboID;
-		glGenBuffers(1, &iboID);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboID);
+		// d) Indexbuffer erzeugen und binden ( IBO sagt welche Vertices zusammen ein Dreieck bilden)
+		glGenBuffers(1, &m_ibo);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-		m_ibo = iboID; // Member speichern
 
-		// 5. Optional: Alles lösen, damit wir nichts versehentlich ändern
+		// e) Optional: alles lösen
 		glBindVertexArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
 
 
 
