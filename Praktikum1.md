@@ -180,3 +180,6 @@ glCullFace(GL_BACK);
 * Rechteck-basierte Buchstaben erleichtern Rendering im 2D-Raster.
 * Member-Variablen für GPU-Objekte notwendig, um sie über mehrere Methoden hinweg zu nutzen.
 
+## 8. Bild der Buchstaben 
+
+![Bildbeschreibung](/Users/marjanechoua/Library/Mobile Documents/com~apple~CloudDocs/myLocal/5.Semester/Visual Computing/Praktika/OpenGL_Praktikum/Buchstaben.png.)
