@@ -63,78 +63,51 @@ bool Scene::init()
      // zweiter Teil von Praktikum 1
 
 		float vertices[] = {
-			// Buchstabe M (alle X-Werte um -1.0 verschoben)
-			// Left vertical (CCW)
-			-1.0f, 0.0f, 0.0f, 0.0f, 1.0f,  // bottom-left 0
-			-1.0f, 0.8f, 0.0f, 0.0f, 1.0f,  // top-left 1
-			-0.9f, 0.8f, 0.0f, 0.0f, 1.0f,  // top-right 2
-			-0.9f, 0.0f, 0.0f, 0.0f, 1.0f,  // bottom-right 3
+			// x, y, r, g, b
+			-0.74f, -0.50f,  0.0f, 0.0f, 1.0f, // A 0
+			-0.67f, -0.50f,  0.0f, 0.0f, 1.0f, // B 1
+			-0.75f,  0.50f,  0.0f, 0.0f, 1.0f, // C 2
+			-0.67f,  0.50f,  0.0f, 0.0f, 1.0f, // D 3
+			-0.33f, -0.50f,  0.0f, 0.0f, 1.0f, // E 4
+			-0.25f, -0.50f,  0.0f, 0.0f, 1.0f, // F 5
+			-0.55f,  0.16f,  0.0f, 0.0f, 1.0f, // G 6
+			-0.45f,  0.16f,  0.0f, 0.0f, 1.0f, // H 7
+			-0.58f,  0.50f,  0.0f, 0.0f, 1.0f, // I 8
+			-0.50f,  0.27f,  0.0f, 0.0f, 1.0f, // J 9
+			-0.33f,  0.50f,  0.0f, 0.0f, 1.0f, // K 10
+			-0.25f,  0.50f,  0.0f, 0.0f, 1.0f, // L 11
+			-0.40f,  0.50f,  0.0f, 0.0f, 1.0f , // M 12
 
-			// Left diagonal (CCW)
-			-0.9f, 0.8f, 0.0f, 0.0f, 1.0f,  // bottom-left (from previous rectangle) 4
-			-0.75f, 0.5f, 0.0f, 0.0f, 1.0f,  // top-left (middle peak) 5
-			-0.65f, 0.5f, 0.0f, 0.0f, 1.0f,  // top-right 6
-			-0.75f, 0.8f, 0.0f, 0.0f, 1.0f,  // bottom-right (repeat) 7
-
-			// Right diagonal (CCW)
-			-0.65f, 0.5f, 0.0f, 0.0f, 1.0f,  // bottom-left (middle peak) 8
-			-0.5f, 0.8f, 0.0f, 0.0f, 1.0f,  // top-left 9
-			-0.4f, 0.8f, 0.0f, 0.0f, 1.0f,  // top-right 10
-			-0.5f, 0.5f, 0.0f, 0.0f, 1.0f,  // bottom-right 11
-
-			// Right vertical (CCW)
-			-0.5f, 0.0f, 0.0f, 0.0f, 1.0f,  // bottom-left 12
-			-0.5f, 0.8f, 0.0f, 0.0f, 1.0f,  // top-left 13
-			-0.4f, 0.8f, 0.0f, 0.0f, 1.0f,  // top-right 14
-			-0.4f, 0.0f, 0.0f, 0.0f, 1.0f,  // bottom-right 15
-
-			// Buchstabe C - Vertices verschoben um +0.8 auf der X-Achse
-	// links vertikal
-	0.2f, 0.0f, 0.0f, 0.0f, 1.0f,  //16
-	0.2f, 0.7f, 0.0f, 0.0f, 1.0f,  //17
-	0.4f, 0.7f, 0.0f, 0.0f, 1.0f,  //18
-	0.4f, 0.0f, 0.0f, 0.0f, 1.0f,  //19
-
-	// oben horizontal
-	0.4f, 0.5f, 0.0f, 0.0f, 1.0f,  //20
-	0.8f, 0.5f, 0.0f, 0.0f, 1.0f,  //21
-	0.8f, 0.7f, 0.0f, 0.0f, 1.0f,  //22
-	0.4f, 0.7f, 0.0f, 0.0f, 1.0f,  //23
-
-	// unten horizontal
-	0.4f, 0.0f, 0.0f, 0.0f, 1.0f,  //24
-	0.8f, 0.0f, 0.0f, 0.0f, 1.0f,  //25
-	0.8f, 0.1f, 0.0f, 0.0f, 1.0f,  //26
-	0.4f, 0.1f, 0.0f, 0.0f, 1.0f   //27
+			// Buchstabe C
+	0.24f, -0.50f,  0.0f, 0.0f, 1.0f, // N 13
+	0.33f, -0.50f,  0.0f, 0.0f, 1.0f, // O 14
+	0.23f,  0.50f,  0.0f, 0.0f, 1.0f, // P 15
+	0.34f,  0.50f,  0.0f, 0.0f, 1.0f, // Q 16
+	0.33f, -0.40f,  0.0f, 0.0f, 1.0f, // R 17
+	0.83f, -0.40f,  0.0f, 0.0f, 1.0f, // S 18
+	0.83f, -0.50f, 0.0f, 0.0f, 1.0f, // T 19
+	0.83f,  0.50f,  0.0f, 0.0f, 1.0f, // U 20
+	0.83f,  0.40f,  0.0f, 0.0f, 1.0f, // V 21
+	0.34f,  0.40f,  0.0f, 0.0f, 1.0f  // W 22
 		};
 
+		unsigned int indices[] = {
+			2, 0, 1,  // C, A, B
+			1, 3,2,  // B, D, C
+			3, 6, 9,  // D, G, J
+			3, 9, 8,  // J, D, I
+			6, 7, 12, // G, H, M
+			12, 7, 10,// M, H, K
+			10, 4, 5, // K, E, F
+			10, 5, 11, // K, F, L
 
-		 int indices[] = {
-		 	 //Buchstabe M
-		 	0, 2, 1, 0, 3, 2,  // Correct winding order for left block
-
-// Left diagonal (CCW)
-		 	// Left diagonal (CCW)
-			 4, 5, 6,  // erstes Dreieck
-			 6,7,4,   // zweites Dreieck
-			   // Correct winding order for left diagonal block
-
-// Right diagonal (CCW)
-8, 9, 10, 8, 11, 9,  // Correct winding order for right diagonal block
-
-// Right vertical (CCW)
-12, 14, 13, 12, 15, 14 , //
-
-
-		 	//Buchstabe C
-		 	// C - Links vertikal (CCW)
-	16, 18, 17, 16, 19, 18,  // links vertikal (2 Dreiecke)
-
-	// C - Oben horizontal (CCW)
-	20, 21, 22, 20, 22, 23,  // oben horizontal (2 Dreiecke)
-
-	// C - Unten horizontal (CCW)
-	24, 25, 26, 24, 26, 27   // unten horizontal (2 Dreiecke)
+			// --- Buchstabe C ---
+	15, 13, 14, // P, N, O
+	15, 14, 16, // P, O, Q
+	16, 22, 20, // Q, W, U
+	22, 21, 20, // W, V, U
+	17, 14, 18, // R, O, S
+	14, 19, 18  // O, T, S
 		};
 
 
