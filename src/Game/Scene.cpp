@@ -66,26 +66,26 @@ bool Scene::init()
 			// Buchstabe M (alle X-Werte um -1.0 verschoben)
 			// Left vertical (CCW)
 			-1.0f, 0.0f, 0.0f, 0.0f, 1.0f,  // bottom-left 0
-			-1.0f, 1.0f, 0.0f, 0.0f, 1.0f,  // top-left 1
-			-0.9f, 1.0f, 0.0f, 0.0f, 1.0f,  // top-right 2
+			-1.0f, 0.8f, 0.0f, 0.0f, 1.0f,  // top-left 1
+			-0.9f, 0.8f, 0.0f, 0.0f, 1.0f,  // top-right 2
 			-0.9f, 0.0f, 0.0f, 0.0f, 1.0f,  // bottom-right 3
 
 			// Left diagonal (CCW)
-			-0.9f, 1.0f, 0.0f, 0.0f, 1.0f,  // bottom-left (from previous rectangle) 4
+			-0.9f, 0.8f, 0.0f, 0.0f, 1.0f,  // bottom-left (from previous rectangle) 4
 			-0.75f, 0.5f, 0.0f, 0.0f, 1.0f,  // top-left (middle peak) 5
 			-0.65f, 0.5f, 0.0f, 0.0f, 1.0f,  // top-right 6
-			-0.75f, 1.0f, 0.0f, 0.0f, 1.0f,  // bottom-right (repeat) 7
+			-0.75f, 0.8f, 0.0f, 0.0f, 1.0f,  // bottom-right (repeat) 7
 
 			// Right diagonal (CCW)
 			-0.65f, 0.5f, 0.0f, 0.0f, 1.0f,  // bottom-left (middle peak) 8
-			-0.5f, 1.0f, 0.0f, 0.0f, 1.0f,  // top-left 9
-			-0.4f, 1.0f, 0.0f, 0.0f, 1.0f,  // top-right 10
+			-0.5f, 0.8f, 0.0f, 0.0f, 1.0f,  // top-left 9
+			-0.4f, 0.8f, 0.0f, 0.0f, 1.0f,  // top-right 10
 			-0.5f, 0.5f, 0.0f, 0.0f, 1.0f,  // bottom-right 11
 
 			// Right vertical (CCW)
 			-0.5f, 0.0f, 0.0f, 0.0f, 1.0f,  // bottom-left 12
-			-0.5f, 1.0f, 0.0f, 0.0f, 1.0f,  // top-left 13
-			-0.4f, 1.0f, 0.0f, 0.0f, 1.0f,  // top-right 14
+			-0.5f, 0.8f, 0.0f, 0.0f, 1.0f,  // top-left 13
+			-0.4f, 0.8f, 0.0f, 0.0f, 1.0f,  // top-right 14
 			-0.4f, 0.0f, 0.0f, 0.0f, 1.0f,  // bottom-right 15
 
 			// Buchstabe C - Vertices verschoben um +0.8 auf der X-Achse
