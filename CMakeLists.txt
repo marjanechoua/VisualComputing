@@ -425,8 +425,6 @@ endif()
 project(OpenGL_Praktikum)
 
 set(SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp"
-        src/Framework/SceneElements/Praktikum1.cpp
-        src/Framework/SceneElements/Praktikum1.h
         src/main.cpp
         src/main.cpp)
 set(INCLUDES "${CMAKE_CURRENT_SOURCE_DIR}/src")

@@ -24,6 +24,8 @@ public:
 	void onMouseScroll(double xscroll, double yscroll);
 	void onFrameBufferResize(int width, int height);
 
+
+
 private:
 	OpenGLWindow* m_window;
 	AssetManager m_assets;
@@ -33,7 +35,7 @@ private:
 	GLuint m_vao;
 	GLuint m_vbo;
 	GLuint m_ibo;
-
+ Transform* cubeTrans;
 
 };
 

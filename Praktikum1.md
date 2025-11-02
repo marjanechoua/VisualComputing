@@ -182,4 +182,4 @@ glCullFace(GL_BACK);
 
 ## 8. Bild der Buchstaben 
 
-![Bildbeschreibung](/Users/marjanechoua/Library/Mobile Documents/com~apple~CloudDocs/myLocal/5.Semester/Visual Computing/Praktika/OpenGL_Praktikum/Buchstaben.png.)
+![Bildbeschreibung](/Users/marjanechoua/Library/Mobile Documents/com~apple~CloudDocs/myLocal/5.Semester/Visual Computing/Praktika/OpenGL_Praktikum/Buchstaben.png)

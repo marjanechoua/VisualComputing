@@ -60,7 +60,7 @@ bool Scene::init()
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 		*/
-     // zweiter Teil von Praktikum 1
+     /* zweiter Teil von Praktikum 1
 
 		float vertices[] = {
 			// x, y, r, g, b
@@ -146,6 +146,82 @@ bool Scene::init()
         glBindVertexArray(0);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+*/
+
+		//Praktikum Nr.2
+
+		// Im Konstruktor der Scene-Klasse
+		cubeTrans = new Transform();  // Initialisiert den Zeiger auf ein neues Transform-Objekt
+
+
+		static const float cubeVert[] =  {0.5, -0.5, -0.5, 1, 0, 0, // rot 0
+										  0.5, -0.5, 0.5, 0, 1, 0, //grün 1
+										  -0.5, -0.5, 0.5, 0, 0, 1, //blau 2
+										  -0.5, -0.5, -0.5, 1, 1, 0, //gelb 3
+										  0.5, 0.5, -0.5, 1, 0, 1, // magenta 4
+										  0.5, 0.5, 0.5, 0, 1, 1, //cyan 5
+										  -0.5, 0.5, 0.5, 1, 1, 1, //weiß 6
+										  -0.5, 0.5, -0.5, 0.5, 1, 0.5}; //hellgrün 7
+		static const int cubeInd[] = {
+			// Unterseite (Y = -0.5)
+			0, 2, 1,
+			0, 3, 2,
+			// Oberseite (Y = 0.5)
+			4, 6, 5,
+			4, 7, 6,
+			// Vorderseite (Z = 0.5)
+			1, 5, 6,
+			1, 6, 2,
+			// Rückseite (Z = -0.5)
+			7, 3, 0,
+			0, 4, 7,
+			// Rechts (X = 0.5)
+			0, 4, 5,
+			0, 5, 1,
+			// Links (X = -0.5)
+			3, 2, 6,
+			3, 6, 7
+		};
+
+
+
+
+
+		// a) VBO erzeugen, binden und Daten hochladen
+		glGenBuffers(1, &m_vbo);
+		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVert), cubeVert, GL_STATIC_DRAW);
+
+		// b) VAO erzeugen und binden
+		glGenVertexArrays(1, &m_vao);
+		glBindVertexArray(m_vao);
+
+		// c) Vertex-Attribute definieren und aktivieren
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6* sizeof(float), (void*)0);         // Position
+		glEnableVertexAttribArray(0);
+
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float))); // Farbe (R,G)
+		glEnableVertexAttribArray(1);
+
+		// d) Indexbuffer erzeugen und binden
+		glGenBuffers(1, &m_ibo);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cubeInd), cubeInd, GL_STATIC_DRAW);
+
+		// e) Backface culling aktivieren, OpenGL rendert nur die Vorderseiten der Dreiecke,
+		// Vorderseite = Dreiecke, deren Vertices gegen den Uhrzeigersinn (CCW) definiert sind,
+		// Rückseite = Dreiecke, deren Vertices im Uhrzeigersinn (CW) definiert sind, werden ausgeblendet
+
+		//glEnable(GL_CULL_FACE);
+		//glFrontFace(GL_CCW);
+		//glCullFace(GL_BACK);
+
+		// Alles lösen
+		glBindVertexArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+
 
         std::cout << "Scene initialization done\n";
         return true;
@@ -172,9 +248,31 @@ void Scene::render(float dt)
 	// Optional: VAO lösen
 	glBindVertexArray(0); */
 
-//  Praktikum 1 Teil 2
+/* Praktikum 1 Teil 2
 	glBindVertexArray(m_vao);
 	glDrawElements(GL_TRIANGLES, 42*3, GL_UNSIGNED_INT, 0); // 42 Indizes insgesamt
+	glBindVertexArray(0);
+*/
+	// Praktikum 2
+	// Shader aktivieren
+	m_shader->use();
+
+	// Berechne die Rotation für dieses Frame
+	float rotationSpeed = 30.0f;  // 30 Grad pro Sekunde
+	float deltaRotation = glm::radians(rotationSpeed * dt);  // Berechne Rotation für das aktuelle Frame
+	glm::quat deltaQuat = glm::quat(glm::vec3(deltaRotation, deltaRotation, deltaRotation));  // Rotation um X, Y, Z
+	cubeTrans->rotate(deltaQuat);  // Wende Rotation auf den Würfel an
+
+	// Setze die Transformationsmatrix in den Shader
+	m_shader->setUniform("model", cubeTrans->getMatrix(), false);
+
+	// VAO binden
+	glBindVertexArray(m_vao);
+
+	// Würfel zeichnen
+	glDrawElements(GL_TRIANGLES, 12 * 3, GL_UNSIGNED_INT, 0);
+
+	// VAO lösen
 	glBindVertexArray(0);
 
 }
