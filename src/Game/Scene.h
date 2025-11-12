@@ -35,7 +35,27 @@ private:
 	GLuint m_vao;
 	GLuint m_vbo;
 	GLuint m_ibo;
- Transform* cubeTrans;
+ Transform cubeTrans;
+	// 2.3.1 - Szenegraph: Definition der Transformationsgruppen für den Roboter
+	// Roboter-Teile (Transformationsobjekte)
+	Transform bodyTrans;           // Rumpf
+	Transform headTrans;           // Kopf
+	Transform bodyPos;
+
+
+	Transform leftLegTrans;        // Linkes Bein
+	Transform rightLegTrans;       // Rechtes Bein
+
+	Transform leftUpperArmTrans;   // Linker Oberarm
+	Transform rightUpperArmTrans;  // Rechter Oberarm
+
+	Transform leftLowerArmTrans;   // Linker Unterarm
+	Transform rightLowerArmTrans;  // Rechter Unterarm
+
+
+
+	float lastFrame = 0.0f;
+
 
 };
 
