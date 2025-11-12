@@ -25,9 +25,9 @@ bool Scene::init()
 		m_shader->use();
 
 		// 2.1 - Tiefentest aktivieren
-		glClearDepth(1.0f);
+		glClearDepth(0.0f);
 		glEnable(GL_DEPTH_TEST);        // Tiefentest aktivieren
-		glDepthFunc(GL_LESS);           // Standard: nächstes Pixel kleinerer Tiefe gewinnt
+		glDepthFunc(GL_GREATER);           // Standard: nächstes Pixel kleinerer Tiefe gewinnt
 		glEnable(GL_CULL_FACE);         // Rückseiten ausblenden
 		glCullFace(GL_BACK);            // Rückseite definieren
 		glFrontFace(GL_CCW);            // Frontface definieren
@@ -97,7 +97,7 @@ void Scene::render(float dt)
     lastFrame = currentFrame;
 
     // 2.2 - Kamera (view) und Projektion definieren
-    glm::mat4 view = glm::lookAt(glm::vec3(8, 8,15), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0)); // Kameraposition und Blickrichtung
+    glm::mat4 view = glm::lookAt(glm::vec3(0, 4,15), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0)); // Kameraposition und Blickrichtung
     glm::mat4 projection = glm::perspective(glm::radians(80.0f), 800.0f / 600.0f, 0.1f, 100.0f); // Perspektivische Projektion
 
     // 2.2.1 Rotation des Würfels
@@ -119,32 +119,43 @@ void Scene::render(float dt)
 
 glm::mat4 robotTrans;
 
-// ----- Rumpf -----
-bodyTrans = Transform();
-bodyTrans.translate(glm::vec3(0.0f, 2.0f, 0.0f));       // Mittig platziert
-bodyTrans.scale(glm::vec3(2.0f, 2.2f, 1.0f));           // Hoch und rechteckig
+// ===================== RUMPF =====================
+Transform bodyTrans;
+Transform bodyPos;
+
+// Körper selbst (nur für den Rumpf)
+bodyTrans.translate(glm::vec3(0.0f, 2.0f, 0.0f));
+bodyTrans.scale(glm::vec3(2.5f, 2.5f, 1.2f));           // dicker und breiter
 robotTrans = bodyTrans.getTransformMatrix();
 m_shader->setUniform("model", robotTrans, false);
 glBindVertexArray(m_vao);
 glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 glBindVertexArray(0);
 
-// ----- Kopf -----
+// Nur Positionsmatrix (ohne Skalierung) für Kinder
+bodyPos.translate(glm::vec3(0.0f, 2.0f, 0.0f));
+
+
+// ===================== KOPF =====================
 headTrans = Transform();
-headTrans.translate(glm::vec3(0.0f, 2.0f, 0.0f));       // Direkt auf dem Körper
-headTrans.scale(glm::vec3(1.0f, 0.6f, 1.0f));           // Etwas kleiner als der Körper
-robotTrans = bodyTrans.getTransformMatrix() * headTrans.getTransformMatrix();
+headTrans.translate(glm::vec3(0.0f, 2.0f, 0.0f));       // sitzt oben auf
+headTrans.scale(glm::vec3(1.0f, 0.8f, 1.0f));           // kompakter Kopf
+robotTrans = bodyPos.getTransformMatrix() * headTrans.getTransformMatrix();
 m_shader->setUniform("model", robotTrans, false);
 glBindVertexArray(m_vao);
 glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 glBindVertexArray(0);
 
+
+// ===================== LINKER ARM =====================
+
 // ----- Linker Oberarm -----
 leftUpperArmTrans = Transform();
-leftUpperArmTrans.translate(glm::vec3(-1.7f, 1.2f, 0.0f)); // direkt an der Schulter
-leftUpperArmTrans.rotateAroundPoint(glm::vec3(0.0f), glm::vec3(glm::sin(currentFrame)*0.25f, 0.0f, 0.0f));
-leftUpperArmTrans.scale(glm::vec3(0.5f, 0.8f, 0.5f));      // schlank, rechteckig
-robotTrans = bodyTrans.getTransformMatrix() * leftUpperArmTrans.getTransformMatrix();
+leftUpperArmTrans.translate(glm::vec3(-1.8f, 0.7f, 0.0f)); // Schulterposition
+leftUpperArmTrans.rotateAroundPoint(glm::vec3(0.0f, 0.6f, 0.0f), glm::vec3(glm::sin(currentFrame) * 0.25f, 0.0f, 0.0f)); // around shoulder joint
+leftUpperArmTrans.scale(glm::vec3(0.4f, 1.2f, 0.4f));
+
+robotTrans = bodyPos.getTransformMatrix() * leftUpperArmTrans.getTransformMatrix();
 m_shader->setUniform("model", robotTrans, false);
 glBindVertexArray(m_vao);
 glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
@@ -152,21 +163,25 @@ glBindVertexArray(0);
 
 // ----- Linker Unterarm -----
 leftLowerArmTrans = Transform();
-leftLowerArmTrans.translate(glm::vec3(0.0f, -1.5f, 0.0f)); // direkt anschließen
-leftLowerArmTrans.rotate(glm::vec3(glm::sin(currentFrame*1.3f)*0.25f, 0.0f, 0.0f));
-leftLowerArmTrans.scale(glm::vec3(0.5f, 0.8f, 0.5f));      // gleich groß wie Oberarm
-robotTrans = bodyTrans.getTransformMatrix() * leftUpperArmTrans.getTransformMatrix() * leftLowerArmTrans.getTransformMatrix();
+leftLowerArmTrans.translate(glm::vec3(0.0f, -1.2f, 0.0f)); // Tip of upper arm
+leftLowerArmTrans.rotate(glm::vec3(-glm::sin(currentFrame*1.3f) * 0.25f, 0.0f, 0.0f)); // Elbow animation
+leftLowerArmTrans.scale(glm::vec3(0.4f, 1.2f, 0.4f));
+
+robotTrans = bodyPos.getTransformMatrix() * leftUpperArmTrans.getTransformMatrix() * leftLowerArmTrans.getTransformMatrix();
 m_shader->setUniform("model", robotTrans, false);
 glBindVertexArray(m_vao);
 glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 glBindVertexArray(0);
 
+// ===================== RECHTER ARM =====================
+
 // ----- Rechter Oberarm -----
 rightUpperArmTrans = Transform();
-rightUpperArmTrans.translate(glm::vec3(1.7f, 1.2f, 0.0f));
-rightUpperArmTrans.rotateAroundPoint(glm::vec3(0.0f), glm::vec3(-glm::sin(currentFrame)*0.25f, 0.0f, 0.0f));
-rightUpperArmTrans.scale(glm::vec3(0.5f, 0.8f, 0.5f));
-robotTrans = bodyTrans.getTransformMatrix() * rightUpperArmTrans.getTransformMatrix();
+rightUpperArmTrans.translate(glm::vec3(1.8f, 0.7f, 0.0f)); // Schulterposition
+rightUpperArmTrans.rotateAroundPoint(glm::vec3(0.0f, 0.6f, 0.0f), glm::vec3(-glm::sin(currentFrame) * 0.25f, 0.0f, 0.0f)); // around shoulder
+rightUpperArmTrans.scale(glm::vec3(0.4f, 1.2f, 0.4f));
+
+robotTrans = bodyPos.getTransformMatrix() * rightUpperArmTrans.getTransformMatrix();
 m_shader->setUniform("model", robotTrans, false);
 glBindVertexArray(m_vao);
 glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
@@ -174,32 +189,35 @@ glBindVertexArray(0);
 
 // ----- Rechter Unterarm -----
 rightLowerArmTrans = Transform();
-rightLowerArmTrans.translate(glm::vec3(0.0f, -1.5f, 0.0f)); // direkt anschließen
-rightLowerArmTrans.rotate(glm::vec3(-glm::sin(currentFrame*1.3f)*0.25f, 0.0f, 0.0f));
-rightLowerArmTrans.scale(glm::vec3(0.5f, 0.8f, 0.5f));      // gleich groß wie Oberarm
-robotTrans = bodyTrans.getTransformMatrix() * rightUpperArmTrans.getTransformMatrix() * rightLowerArmTrans.getTransformMatrix();
+rightLowerArmTrans.translate(glm::vec3(0.0f, -1.2f, 0.0f)); // Tip of upper arm
+rightLowerArmTrans.rotate(glm::vec3(-glm::sin(currentFrame*1.3f) * 0.25f, 0.0f, 0.0f)); // Elbow animation
+rightLowerArmTrans.scale(glm::vec3(0.4f, 1.2f, 0.4f));
+
+robotTrans = bodyPos.getTransformMatrix() * rightUpperArmTrans.getTransformMatrix() * rightLowerArmTrans.getTransformMatrix();
 m_shader->setUniform("model", robotTrans, false);
 glBindVertexArray(m_vao);
 glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 glBindVertexArray(0);
 
-// ----- Linkes Bein -----
+
+// ===================== LINKES BEIN =====================
 leftLegTrans = Transform();
-leftLegTrans.translate(glm::vec3(-0.6f, -1.8f, 0.0f)); // eng unter Körper
-leftLegTrans.rotateAroundPoint(glm::vec3(0.0f), glm::vec3(glm::sin(currentFrame)*0.2f, 0.0f, 0.0f));
-leftLegTrans.scale(glm::vec3(0.6f, 2.0f, 0.6f));       // etwas länger als Arme
-robotTrans = bodyTrans.getTransformMatrix() * leftLegTrans.getTransformMatrix();
+leftLegTrans.translate(glm::vec3(-0.7f, -2.8f, 0.0f)); // direkt unter Rumpf
+leftLegTrans.rotateAroundPoint(glm::vec3(0.0f), glm::vec3(glm::sin(currentFrame) * 0.2f, 0.0f, 0.0f));
+leftLegTrans.scale(glm::vec3(0.5f, 2.2f, 0.5f));       // längere Beine
+robotTrans = bodyPos.getTransformMatrix() * leftLegTrans.getTransformMatrix();
 m_shader->setUniform("model", robotTrans, false);
 glBindVertexArray(m_vao);
 glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 glBindVertexArray(0);
 
-// ----- Rechtes Bein -----
+
+// ===================== RECHTES BEIN =====================
 rightLegTrans = Transform();
-rightLegTrans.translate(glm::vec3(0.6f, -1.8f, 0.0f));
-rightLegTrans.rotateAroundPoint(glm::vec3(0.0f), glm::vec3(-glm::sin(currentFrame)*0.2f, 0.0f, 0.0f));
-rightLegTrans.scale(glm::vec3(0.6f, 2.0f, 0.6f));
-robotTrans = bodyTrans.getTransformMatrix() * rightLegTrans.getTransformMatrix();
+rightLegTrans.translate(glm::vec3(0.7f, -2.8f, 0.0f));
+rightLegTrans.rotateAroundPoint(glm::vec3(0.0f), glm::vec3(-glm::sin(currentFrame) * 0.2f, 0.0f, 0.0f));
+rightLegTrans.scale(glm::vec3(0.5f, 2.2f, 0.5f));
+robotTrans = bodyPos.getTransformMatrix() * rightLegTrans.getTransformMatrix();
 m_shader->setUniform("model", robotTrans, false);
 glBindVertexArray(m_vao);
 glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
