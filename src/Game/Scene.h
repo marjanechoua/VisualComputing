@@ -14,6 +14,7 @@ public:
 
 	bool init();
 	void shutdown();
+	void drawPart(const glm::mat4& parent, Transform& part);
 	void render(float dt);
 	void update(float dt);
 	OpenGLWindow* getWindow();
@@ -40,7 +41,8 @@ private:
 	// Roboter-Teile (Transformationsobjekte)
 	Transform bodyTrans;           // Rumpf
 	Transform headTrans;           // Kopf
-	Transform bodyPos;
+	Transform rootTrans;
+	Transform robotTrans;
 
 
 	Transform leftLegTrans;        // Linkes Bein
