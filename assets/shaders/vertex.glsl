@@ -14,7 +14,7 @@ void main(){
     colorVS = colorRGB;
 
     // gl_Position= model * vec4(vertex,1.0);
-    gl_Position = projection * view * model * vec4(vertex, 1.0);
+    gl_Position =  model * vec4(vertex, 1.0);
 
 
 }

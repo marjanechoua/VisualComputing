@@ -28,9 +28,9 @@ bool Scene::init()
         m_shader->use(); // Shader für die folgenden Renderoperationen aktivieren
 
         // Tiefentest aktivieren, um sicherzustellen, dass nur die Vorderseite eines Objekts sichtbar ist
-        glClearDepth(1.0f); // Setzt den Wert für den Tiefenpuffer
+        glClearDepth(0.0f); // Setzt den Wert für den Tiefenpuffer
         glEnable(GL_DEPTH_TEST); // Tiefentest aktivieren
-        glDepthFunc(GL_LESS); // Nur Objekte, die näher sind, werden angezeigt
+        glDepthFunc(GL_GREATER); // Nur Objekte, die näher sind, werden angezeigt
         glEnable(GL_CULL_FACE); // Culling aktivieren, um Rückseiten von Dreiecken zu ignorieren
         glCullFace(GL_BACK); // Rückseiten von Objekten werden entfernt
         glFrontFace(GL_CCW); // Legt fest, dass die Vorderseite eines Objekts im Uhrzeigersinn ist (CCW = Counter Clock Wise)
@@ -94,13 +94,13 @@ void Scene::render(float dt)
 
 
     // --------------------- Kamera & Projektion ---------------------
-    glm::mat4 view = glm::lookAt(glm::vec3(0, 0, 9), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0)); // Blickwinkel
-    glm::mat4 projection = glm::perspective(glm::radians(80.0f), 800.0f / 600.0f, 0.1f, 100.0f); // Perspektive
+    //glm::mat4 view = glm::lookAt(glm::vec3(0, 0, 9), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0)); // Blickwinkel
+    //glm::mat4 projection = glm::perspective(glm::radians(80.0f), 800.0f / 600.0f, 0.1f, 100.0f); // Perspektive
 
     // Setze die Kamera- und Projektionsmatrix im Shader
     m_shader->use();
-    m_shader->setUniform("view", view, false);
-    m_shader->setUniform("projection", projection, false);
+    //m_shader->setUniform("view", view, false);
+    //m_shader->setUniform("projection", projection, false);
     // Setze die Zeit-Uniform im Shader für Farbanimationen
 
     m_shader->setUniform("time", currentFrame);  // Zeit an den Shader übergeben
@@ -125,7 +125,8 @@ void Scene::render(float dt)
     // --------------------- ROBOT (lokal) ---------------------
     // Der Roboter wird in das Root-Koordinatensystem bewegt
     robotTrans.translate(glm::vec3(0.0f, 0.0f, 0.0f)); // Position im Root-Koordinatensystem
-    glm::mat4 robotMat = rootTrans.getTransformMatrix() * robotTrans.getTransformMatrix(); // Berechne die endgültige Transformationsmatrix des Roboters
+    robotTrans.scale(glm::vec3(0.2f));
+    glm::mat4 robotMat = rootTrans.getTransformMatrix() * robotTrans.getTransformMatrix();
 
     // --------------------- RUMPF ---------------------
     // Der Körper des Roboters wird mit einer Position und Skalierung versehen
