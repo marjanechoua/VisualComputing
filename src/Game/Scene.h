@@ -14,7 +14,8 @@ public:
 
 	bool init();
 	void shutdown();
-	void drawPart(const glm::mat4& parent, Transform& part);
+	//void drawPart(const glm::mat4& parent, Transform& part);
+	void drawCube(const glm::mat4& model);
 	void render(float dt);
 	void update(float dt);
 	OpenGLWindow* getWindow();
@@ -36,6 +37,7 @@ private:
 	GLuint m_vao;
 	GLuint m_vbo;
 	GLuint m_ibo;
+	GLuint m_vertexCount;
  Transform cubeTrans;
 	// 2.3.1 - Szenegraph: Definition der Transformationsgruppen für den Roboter
 	// Roboter-Teile (Transformationsobjekte)
@@ -47,10 +49,11 @@ private:
 
 	Transform leftLegTrans;        // Linkes Bein
 	Transform rightLegTrans;       // Rechtes Bein
+Transform rightArmTrans;
 
 	Transform leftUpperArmTrans;   // Linker Oberarm
 	Transform rightUpperArmTrans;  // Rechter Oberarm
-
+Transform leftArmTrans;
 	Transform leftLowerArmTrans;   // Linker Unterarm
 	Transform rightLowerArmTrans;  // Rechter Unterarm
 

@@ -1,5 +1,7 @@
 #include "Scene.h"
 #include "Framework/SceneElements/Cube.h"
+#include "Framework/SceneElements/CubeWithNormals.h"
+#include "Framework/SceneElements/CubeWithNormalsColored.h"
 #include <AssetManager.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -28,34 +30,64 @@ bool Scene::init()
         m_shader->use(); // Shader für die folgenden Renderoperationen aktivieren
 
         // Tiefentest aktivieren, um sicherzustellen, dass nur die Vorderseite eines Objekts sichtbar ist
-        glClearDepth(0.0f); // Setzt den Wert für den Tiefenpuffer
+
         glEnable(GL_DEPTH_TEST); // Tiefentest aktivieren
-        glDepthFunc(GL_GREATER); // Nur Objekte, die näher sind, werden angezeigt
         glEnable(GL_CULL_FACE); // Culling aktivieren, um Rückseiten von Dreiecken zu ignorieren
         glCullFace(GL_BACK); // Rückseiten von Objekten werden entfernt
         glFrontFace(GL_CCW); // Legt fest, dass die Vorderseite eines Objekts im Uhrzeigersinn ist (CCW = Counter Clock Wise)
 
-        // Geometrie des Würfels laden (Vertex-Daten)
-        glGenBuffers(1, &m_vbo); // Ein Vertex-Buffer-Objekt (VBO) erzeugen
-        glBindBuffer(GL_ARRAY_BUFFER, m_vbo); // VBO an das OpenGL-Kontext binden
-        glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVert), cubeVert, GL_STATIC_DRAW); // Daten für das VBO übergeben
+        // // Geometrie des Würfels laden (Vertex-Daten)
+        // glGenBuffers(1, &m_vbo); // Ein Vertex-Buffer-Objekt (VBO) erzeugen
+        // glBindBuffer(GL_ARRAY_BUFFER, m_vbo); // VBO an das OpenGL-Kontext binden
+        // //Praktikum2
+        // glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVert), cubeVert, GL_STATIC_DRAW); // Daten für das VBO übergeben
+        //
+        // // Ein Vertex-Array-Objekt (VAO) erzeugen
+        // glGenVertexArrays(1, &m_vao);
+        // glBindVertexArray(m_vao); // VAO binden
+        //
+        // // Die Vertex-Daten an OpenGL übergeben (Position und Farbe)
+        // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0); // Position der Eckpunkte
+        // glEnableVertexAttribArray(0); // Aktiviert das Attribut für die Position
+        //
+        // // Farbwerte für die Eckpunkte an OpenGL übergeben
+        // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+        // glEnableVertexAttribArray(1); // Aktiviert das Attribut für die Farbe
+        //
+        // // Indices für das Element-Array-Buffer (EBO) laden
+        // glGenBuffers(1, &m_ibo);
+        // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo); // EBO binden
+        // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cubeInd), cubeInd, GL_STATIC_DRAW); // Indizes für die Würfelflächen
 
-        // Ein Vertex-Array-Objekt (VAO) erzeugen
+
+        // Aufgabe 3.2
+        // --------------------- Würfel mit Normalen und Farben ---------------------
         glGenVertexArrays(1, &m_vao);
-        glBindVertexArray(m_vao); // VAO binden
+        glBindVertexArray(m_vao);
 
-        // Die Vertex-Daten an OpenGL übergeben (Position und Farbe)
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0); // Position der Eckpunkte
-        glEnableVertexAttribArray(0); // Aktiviert das Attribut für die Position
+        glGenBuffers(1, &m_vbo);
+        glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 
-        // Farbwerte für die Eckpunkte an OpenGL übergeben
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-        glEnableVertexAttribArray(1); // Aktiviert das Attribut für die Farbe
+        // cubeVertWithNormalsColored aus den Folien (Position, Farbe, Normalen)
+        glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertWithNormals), cubeVertWithNormals, GL_STATIC_DRAW);
 
-        // Indices für das Element-Array-Buffer (EBO) laden
-        glGenBuffers(1, &m_ibo);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo); // EBO binden
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cubeInd), cubeInd, GL_STATIC_DRAW); // Indizes für die Würfelflächen
+        // Vertex-Attribute
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)0); // Position
+        glEnableVertexAttribArray(0);
+
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(3 * sizeof(float))); // Farbe
+        glEnableVertexAttribArray(1);
+
+        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(6 * sizeof(float))); // Normale
+        glEnableVertexAttribArray(2);
+
+        m_vertexCount = sizeof(cubeVertWithNormals) / (9 * sizeof(float));
+
+        glBindVertexArray(0);
+
+
+
+
 
         std::cout << "Scene initialization done\n";
         return true; // Rückgabe, dass die Initialisierung erfolgreich war
@@ -66,23 +98,32 @@ bool Scene::init()
     }
 }
 
-// Hilfsfunktion zum Zeichnen eines Teils der Szene
-void Scene::drawPart(const glm::mat4& parentMat, Transform& part)
-{
-    // Berechne die endgültige Modellmatrix für dieses Teil
-    glm::mat4 model = parentMat * part.getTransformMatrix();
-    m_shader->setUniform("model", model, false); // Setze die Modellmatrix im Shader
+// // Hilfsfunktion zum Zeichnen eines Teils der Szene (Aufgabe 2.3)
+// void Scene::drawPart(const glm::mat4& parentMat, Transform& part)
+// {
+//     // Berechne die endgültige Modellmatrix für dieses Teil
+//     glm::mat4 model = parentMat * part.getTransformMatrix();
+//     m_shader->setUniform("model", model, false); // Setze die Modellmatrix im Shader
+//
+//     // Gebe das Modell zum Rendern an OpenGL weiter
+//     glBindVertexArray(m_vao); // VAO binden, um es für das Rendering zu verwenden
+//     glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0); // Zeichne 36 Indizes des Würfels (als Dreiecke)
+//     glBindVertexArray(0); // Entbinde das VAO
+// }
+//für Aufgabe 3.2
 
-    // Gebe das Modell zum Rendern an OpenGL weiter
-    glBindVertexArray(m_vao); // VAO binden, um es für das Rendering zu verwenden
-    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0); // Zeichne 36 Indizes des Würfels (als Dreiecke)
-    glBindVertexArray(0); // Entbinde das VAO
+void Scene::drawCube(const glm::mat4& model)
+{
+    m_shader->setUniform("model", model, false);
+    glBindVertexArray(m_vao);
+    glDrawArrays(GL_TRIANGLES, 0, m_vertexCount);
+    glBindVertexArray(0);
 }
 
 // Funktion zum Rendern der Szene (wird pro Frame aufgerufen)
 void Scene::render(float dt)
 {
-    // --------------------- Frame vorbereiten ---------------------
+    /*// ( Aufgabe 2 und 3.1 mit Kamera: Frame vorbereiten ---------------------
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Bildschirm löschen (Farben + Tiefe)
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Hintergrundfarbe festlegen (schwarz)
 
@@ -94,16 +135,18 @@ void Scene::render(float dt)
 
 
     // --------------------- Kamera & Projektion ---------------------
-    //glm::mat4 view = glm::lookAt(glm::vec3(0, 0, 9), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0)); // Blickwinkel
-    //glm::mat4 projection = glm::perspective(glm::radians(80.0f), 800.0f / 600.0f, 0.1f, 100.0f); // Perspektive
+    glm::vec3 cameraPos = glm::vec3(0, 0, 2); // Position der Kamera
+    glm::mat4 view = glm::lookAt(glm::vec3(0, 0, 2), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0)); // Blickwinkel
+    glm::mat4 projection = glm::perspective(glm::radians(70.0f), 800.0f / 600.0f, 0.1f, 100.0f); // Perspektive
 
     // Setze die Kamera- und Projektionsmatrix im Shader
     m_shader->use();
-    //m_shader->setUniform("view", view, false);
-    //m_shader->setUniform("projection", projection, false);
+    m_shader->setUniform("view", view, false);
+    m_shader->setUniform("projection", projection, false);
     // Setze die Zeit-Uniform im Shader für Farbanimationen
 
     m_shader->setUniform("time", currentFrame);  // Zeit an den Shader übergeben
+
 
     // --------------------- Transforms zurücksetzen ---------------------
     // Initialisieren der Transform-Objekte für den Roboter
@@ -176,7 +219,30 @@ void Scene::render(float dt)
     rightLegTrans.translate(glm::vec3(1.0f, -2.2f, 0.0f)); // Position des rechten Beins
     rightLegTrans.rotateAroundPoint(glm::vec3(0.5f, -1.125f, 0.0f), glm::vec3(-glm::sin(currentFrame) * 0.2f, 0.0f, 0.0f)); // Rotation des rechten Beins
     rightLegTrans.scale(glm::vec3(0.5f, 2.2f, 0.9f)); // Skalierung des rechten Beins
-    drawPart(robotMat, rightLegTrans); // Zeichne das rechte Bein
+    drawPart(robotMat, rightLegTrans); // Zeichne das rechte Bein*/
+
+    //Aufgabe 3.2 Würfel ohne Belichtung
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+    float currentFrame = glfwGetTime();
+    lastFrame = currentFrame;
+
+    // Kamera
+    glm::mat4 view = glm::lookAt(glm::vec3(2,2,6), glm::vec3(0.0f), glm::vec3(0.0f,1.0f,0.0f));
+    glm::mat4 projection = glm::perspective(glm::radians(70.0f), 800.0f/600.0f, 0.1f, 100.0f);
+
+    m_shader->use();
+    m_shader->setUniform("view", view, false);
+    m_shader->setUniform("projection", projection, false);
+
+    // Würfel
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::scale(model, glm::vec3(1.0f));
+    drawCube(model);
+
+
+
 }
 
 
